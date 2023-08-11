@@ -1,24 +1,30 @@
 import json
 import click
+import os
 
-# ______________________________________________________________________
 # Loads configuration files containing controlled vocabulary
+data_folder = os.path.realpath(os.path.join(os.path.dirname(__file__), 'data'))
 
-config_file = '../config/config.json'
 
-gas_vocab_file = '../config/gas_vocab.json'
+def find_path(file: str):
+    return os.path.join(data_folder, file)
 
-aerosol_vocab_file = '../config/aerosol_vocab.json'
 
-cloud_vocab_file = '../config/cloud_vocab.json'
+config_file = find_path('config.json')
 
-meteorology_vocab_file = '../config/meteorology_vocab.json'
+gas_vocab_file = find_path('gas_vocab.json')
 
-photolysis_rate_vocab_file = '../config/photolysis_rate_vocab.json'
+aerosol_vocab_file = find_path('aerosol_vocab.json')
 
-platform_vocab_file = '../config/platform_vocab.json'
+cloud_vocab_file = find_path('cloud_vocab.json')
 
-radiation_vocab_file = '../config/radiation_vocab.json'
+meteorology_vocab_file = find_path('meteorology_vocab.json')
+
+photolysis_rate_vocab_file = find_path('photolysis_rate_vocab.json')
+
+platform_vocab_file = find_path('platform_vocab.json')
+
+radiation_vocab_file = find_path('radiation_vocab.json')
 
 
 def load_config(file: str):
@@ -29,85 +35,80 @@ def load_config(file: str):
 
 config_data = load_config(config_file)
 
-# ______________________________________________________________________
 # Stores the possible error messages
-# Repeat measurement category in message ie "Aermp is not valid"
-
 error_messages = {
-    "MEASURE_CAT_ERROR": lambda measure_cat:
+    'MEASURE_CAT_ERROR': lambda measure_cat:
     f"Measurement category {click.style(measure_cat, fg='red')} is not valid; valid measurement categories are "
     f"{click.style(', '.join([str(s) for s in list(config_data['MeasurementCategory'].keys())]), fg='green')}",
 
-    "NUM_ATTRIBUTES_ERROR": lambda num_attributes, expected:
+    'NUM_ATTRIBUTES_ERROR': lambda num_attributes, expected:
     f"Number of descriptive attributes ({click.style(num_attributes, fg='red')}) does not match with expected "
     f"number of attributes ({click.style(expected, fg='green')}).",
 
-    "ACQUISITION_ERROR": lambda acquisition_met:
+    'ACQUISITION_ERROR': lambda acquisition_met:
     f"Acquisition method {click.style(acquisition_met, fg='red')} is not valid; valid acquisition methods are "
     f"{click.style(', '.join([str(s) for s in config_data['AcquisitionMethod']]), fg='green')}",
 
-    "CORE_NAME_ERROR": lambda core_name, measure_cat:
+    'CORE_NAME_ERROR': lambda core_name, measure_cat:
     f"Core Name {click.style(core_name, fg='red')} is not valid for the measurement category "
     f"{click.style(measure_cat, fg='blue')}.",
 
-    "SPECIFICITY_ERROR": lambda specificity, expected:
+    'SPECIFICITY_ERROR': lambda specificity, expected:
     f"Specificity attribute {click.style(specificity, fg='red')} does not match with the core name; "
     f"expected to see {click.style(expected, fg='green')}",
 
-    "REPORTING_ERROR": lambda reporting, valid_list:
+    'REPORTING_ERROR': lambda reporting, valid_list:
     f"Reporting attribute {click.style(reporting, fg='red')} is not valid; valid attributes are "
     f"{click.style(', '.join([str(s) for s in valid_list]), fg='green')}",
 
-    "WL_ERROR": lambda wave_length, valid_list:
+    'WL_ERROR': lambda wave_length, valid_list:
     f"WaveLength attribute {click.style(wave_length, fg='red')} is not valid; valid attributes are "
     f"{click.style(', '.join([str(s) for s in valid_list]), fg='green')}",
 
-    "MEASUREMENT_RH_ERROR": lambda relative_humidity, valid_list:
+    'MEASUREMENT_RH_ERROR': lambda relative_humidity, valid_list:
     f"MeasurementRH attribute {click.style(relative_humidity, fg='red')} is not valid; valid attributes are "
     f"{click.style(', '.join([str(s) for s in valid_list]), fg='green')}",
 
-    "SIZING_TECHNIQUE_ERROR": lambda sizing_technique, valid_list:
+    'SIZING_TECHNIQUE_ERROR': lambda sizing_technique, valid_list:
     f"SizingTechnique attribute {click.style(sizing_technique, fg='red')} is not valid; valid attributes are "
     f"{click.style(', '.join([str(s) for s in valid_list]), fg='green')}",
 
-    "SIZE_RANGE_ERROR": lambda size_range, sizing_technique, valid_list:
+    'SIZE_RANGE_ERROR': lambda size_range, sizing_technique, valid_list:
     f"SizeRange attribute {click.style(size_range, fg='red')} is not valid; valid attributes are "
     f"{click.style(', '.join([str(s) for s in valid_list]), fg='green')}" if sizing_technique != 'None' else
     f"SizingRange attribute must be {click.style('Bulk', fg='green')} if SizingTechnique is "
     f"{click.style('None', fg='blue')}",
 
-    "MEASURE_DIR_ERROR": lambda measurement_direction, valid_list:
+    'MEASURE_DIR_ERROR': lambda measurement_direction, valid_list:
     f"MeasurementDirection attribute {click.style(measurement_direction, fg='red')} is not valid; valid attributes "
     f"are {click.style(', '.join([str(s) for s in valid_list]), fg='green')}",
 
-    "SPECTRAL_COV_ERROR": lambda spectral_coverage, valid_list:
+    'SPECTRAL_COV_ERROR': lambda spectral_coverage, valid_list:
     f"SpectralCoverage attribute {click.style(spectral_coverage, fg='red')} is not valid; valid attributes are "
     f"{click.style(', '.join([str(s) for s in valid_list]), fg='green')}",
 
-    "PRODUCT_ERROR": lambda products, valid_list:
+    'PRODUCT_ERROR': lambda products, valid_list:
     f"{click.style(products, fg='red')} is not a known product; known products are "
     f"{click.style(', '.join([str(s) for s in valid_list]), fg='green')}" if valid_list else
     f"{click.style(products, fg='red')} is not valid; expected to see "
     f"{click.style('NoProductsSpecified', fg='green')}",
 
-    "WL_MODE_ERROR": lambda wl_mode, valid_list:
+    'WL_MODE_ERROR': lambda wl_mode, valid_list:
     f"WLMode attribute ({click.style(wl_mode, fg='red')}) is not valid; valid attributes are "
     f"{click.style(', '.join([str(s) for s in valid_list]), fg='green')}",
 
-    "ZERO_ATTRIBUTE_ERROR": lambda measure_cat:
+    'ZERO_ATTRIBUTE_ERROR': lambda measure_cat:
     f"Descriptive attribute for {click.style(measure_cat, fg='blue')} must be {click.style('None', fg='green')}.",
 
-    "INSITU_ERROR": lambda acquisition_met:
+    'INSITU_ERROR': lambda acquisition_met:
     f"Acquisition method ({click.style(acquisition_met, fg='red')}) is not valid; must be "
     f"{click.style('InSitu', fg='green')}",
 
-    "NO_ERROR": click.style("Standard name is valid.", fg='green'),
+    'NO_ERROR': click.style("Standard name is valid.", fg='green'),
 }
 
 
-# ______________________________________________________________________
-# Initializes StandardName object, then parses name with underscore delimiter
-
+# Constructs StandardName object, then parses name with underscore delimiter
 class StandardName:
     def __init__(self, standard_name):
         self.standard_name = standard_name
@@ -121,11 +122,9 @@ class StandardName:
         self.num_of_attributes = max(0, len(self.parsed_name) - 3)
         self.measurement_cat = self.parsed_name[0]
 
-    # ______________________________________________________________________
     # Functions for checking the measurement category and acquisition method
     def check_measure_cat(self) -> bool:
-        valid_measure_cat = self.measurement_cat in \
-                            config_data["MeasurementCategory"].keys()
+        valid_measure_cat = self.measurement_cat in config_data["MeasurementCategory"].keys()
         if not valid_measure_cat:
             self.error_codes.append(error_messages['MEASURE_CAT_ERROR'](self.measurement_cat))
         return valid_measure_cat
@@ -137,9 +136,7 @@ class StandardName:
             self.error_codes.append(error_messages["ACQUISITION_ERROR"](acquisition_met))
         return valid_acquisition_met
 
-    # ______________________________________________________________________
     # Checks if the number of descriptive attributes matches with measurement category
-
     def check_num_attributes(self) -> bool:
         expected_attributes = config_data["MeasurementCategory"].get(self.measurement_cat)
         valid_num_attributes = (expected_attributes == self.num_of_attributes) if expected_attributes != 0 \
@@ -148,9 +145,7 @@ class StandardName:
             self.error_codes.append(error_messages["NUM_ATTRIBUTES_ERROR"](self.num_of_attributes, expected_attributes))
         return valid_num_attributes
 
-    # ______________________________________________________________________
-    # Checks if the descriptive attributes are valid for each measurement category
-
+    # Helper functions to check if the descriptive attributes are valid for the corresponding measurement category
     def check_gas(self) -> bool:
         gas_vocab = load_config(gas_vocab_file)
 
@@ -259,7 +254,7 @@ class StandardName:
             self.error_codes.append(error_messages["SIZE_RANGE_ERROR"](size_range, "Default",
                                                                        aerosol_vocab["SizeRange"]))
         if not valid_reporting:
-            self.error_codes.append(error_messages["REPORTING_ERROR"](valid_reporting,
+            self.error_codes.append(error_messages["REPORTING_ERROR"](reporting,
                                                                       aerosol_vocab["AerMP/AerOpt Reporting"]))
 
         return valid_core_name and valid_wl and valid_rh and valid_size_range and valid_reporting
@@ -471,9 +466,7 @@ class StandardName:
 
         return valid_core_name and valid_wl_mode and valid_acquisition
 
-    # ______________________________________________________________________
     # Main function that checks all the attributes of standard name
-
     def check_standard_name(self) -> bool:
         self.parse_name()
 
@@ -482,38 +475,43 @@ class StandardName:
         valid_acquisition = False
         valid_attributes = False
 
+        check_descriptive_att = {
+            "Gas": self.check_gas,
+            "AerMP": self.check_aermp,
+            "AerComp": self.check_aercomp,
+            "AerOpt": self.check_aeropt,
+            "CldComp": self.check_cldcomp,
+            "CldMicro": self.check_cldmicro,
+            "CldMacro": self.check_cldmacro,
+            "CldOpt": self.check_cldopt,
+            "Met": self.check_met,
+            "GasJvalue": self.check_gasjvalue,
+            "AquJvalue": self.check_aqujvalue,
+            "Platform": self.check_platform,
+            "Rad": self.check_rad
+        }
+
         if valid_measure_cat:
             valid_num_att = self.check_num_attributes()
         if valid_num_att:
             valid_acquisition = self.check_acquisition_met()
         if valid_acquisition:
-            check_descriptive_att = {
-                "Gas": self.check_gas,
-                "AerMP": self.check_aermp,
-                "AerComp": self.check_aercomp,
-                "AerOpt": self.check_aeropt,
-                "CldComp": self.check_cldcomp,
-                "CldMicro": self.check_cldmicro,
-                "CldMacro": self.check_cldmacro,
-                "CldOpt": self.check_cldopt,
-                "Met": self.check_met,
-                "GasJvalue": self.check_gasjvalue,
-                "AquJvalue": self.check_aqujvalue,
-                "Platform": self.check_platform,
-                "Rad": self.check_rad
-            }
             valid_attributes = check_descriptive_att[self.measurement_cat]()
 
         return valid_measure_cat and valid_num_att and valid_acquisition and valid_attributes
 
 
-# ______________________________________________________________________
-# Command line interface that prints whether standard name is valid;
-# if not, prints most recent error
+# Command line interface that prints whether standard name is valid; if not, prints list of errors
+@click.group()
+def main():
+    """Checks if a STANDARD NAME is valid. For documentation on ACVSNC, visit
+    https://www.earthdata.nasa.gov/esdis/esco/standards-and-practices/acvsnc"""
+    pass
+
 
 @click.command()
-@click.option("-n", "--name", prompt="Enter the standard name", help="Standard Name")
-def main(name):
+@click.argument('name')
+def check_name(name):
     standard_name = StandardName(name)
     is_valid = standard_name.check_standard_name()
     errors = standard_name.error_codes
@@ -528,6 +526,47 @@ def main(name):
         for index, error in enumerate(errors):
             click.echo(f"{index + 1}. {error}")
 
+
+@click.command()
+@click.argument('filename')
+def check_file(filename):
+    click.echo("Checking file ... \n")
+
+    try:
+        with open(filename, 'r') as file_input:
+            file_header = file_input.readlines()
+    except IOError:
+        click.secho("File was not found.", fg='red')
+        exit()
+
+    num_variables = int(file_header[9])
+    valid_header = True
+
+    for line_index in range(12, 12 + num_variables):
+        line = file_header[line_index]
+        if not ('TIME' in line.upper()):
+
+            standard_name = StandardName(line.split(',')[2].strip())
+            is_valid = standard_name.check_standard_name()
+            errors = standard_name.error_codes
+
+            if not is_valid and standard_name.standard_name != 'None':
+                click.echo(f"Error found on line {click.style(line_index, fg='yellow')} with standard name "
+                           f"{click.style(standard_name.standard_name, fg='red')}")
+                valid_header = False
+                if len(errors) == 1:
+                    click.echo(f"{errors[0]}")
+                else:
+                    for index, error in enumerate(errors):
+                        click.echo(f"{index + 1}. {error}")
+                click.echo("-------------------------------------------------------------------------------")
+
+    if valid_header:
+        click.echo("All standard names in file header are valid.")
+
+
+main.add_command(check_name)
+main.add_command(check_file)
 
 if __name__ == '__main__':
     main()

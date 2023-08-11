@@ -1,6 +1,6 @@
 import unittest
 
-from src.main import StandardName
+from acvsn_checker.checker import StandardName
 
 
 class TestChecker(unittest.TestCase):
@@ -14,8 +14,7 @@ class TestChecker(unittest.TestCase):
         cldmacro = StandardName('CldMacro_CTH_InSitu_None')
         cldopt = StandardName('CldOpt_Extinction_InSitu_Blue')
         met = StandardName('Met_StaticAirTemperature_InSitu_None')
-        gasjvalue = StandardName('GasJvalue_jNO2_InSitu_Total_Full_NO2-O3P')
-        aqujvalue = StandardName('GasJvalue_jNO2_InSitu_Total_Full_NO2-O3P')
+        gasjvalue = StandardName('GasJvalue_jHNO4_InSitu_Total_Partial_HO2-NO2')
         platform = StandardName('Platform_YawAngle_InSitu_None')
         rad = StandardName('Rad_IrradianceDownwellingDiffuse_InSitu_BB')
 
@@ -29,7 +28,5 @@ class TestChecker(unittest.TestCase):
         self.assertEquals(cldopt.check_standard_name(), True)
         self.assertEquals(met.check_standard_name(), True)
         self.assertEquals(gasjvalue.check_standard_name(), True)
-        self.assertEquals(aqujvalue.check_standard_name(), True)
         self.assertEquals(platform.check_standard_name(), True)
         self.assertEquals(rad.check_standard_name(), True)
-
