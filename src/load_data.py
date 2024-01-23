@@ -3,7 +3,7 @@ import os
 
 
 # Loads configuration files containing controlled vocabulary
-acvsn_dir = os.path.dirname(os.path.dirname(__file__))
+acvsn_dir = os.path.dirname(__file__)
 data_folder = os.path.realpath(os.path.join(acvsn_dir, 'data'))
 
 
