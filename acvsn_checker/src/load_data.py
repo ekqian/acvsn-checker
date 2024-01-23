@@ -3,7 +3,8 @@ import os
 
 
 # Loads configuration files containing controlled vocabulary
-data_folder = os.path.realpath(os.path.join(os.path.dirname(__file__), 'data'))
+acvsn_dir = os.path.dirname(os.path.dirname(__file__))
+data_folder = os.path.realpath(os.path.join(acvsn_dir, 'data'))
 
 
 def find_path(file: str):
