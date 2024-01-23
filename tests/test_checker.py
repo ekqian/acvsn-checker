@@ -1,6 +1,6 @@
 import unittest
 
-from acvsn_checker.checker import StandardName
+from acvsn_checker.standard_name import StandardName
 
 
 class TestChecker(unittest.TestCase):
@@ -18,15 +18,15 @@ class TestChecker(unittest.TestCase):
         platform = StandardName('Platform_YawAngle_InSitu_None')
         rad = StandardName('Rad_IrradianceDownwellingDiffuse_InSitu_BB')
 
-        self.assertEquals(gas.check_standard_name(), True)
-        self.assertEquals(aermp.check_standard_name(), True)
-        self.assertEquals(aercomp.check_standard_name(), True)
-        self.assertEquals(aeropt.check_standard_name(), True)
-        self.assertEquals(cldcomp.check_standard_name(), True)
-        self.assertEquals(cldmicro.check_standard_name(), True)
-        self.assertEquals(cldmacro.check_standard_name(), True)
-        self.assertEquals(cldopt.check_standard_name(), True)
-        self.assertEquals(met.check_standard_name(), True)
-        self.assertEquals(gasjvalue.check_standard_name(), True)
-        self.assertEquals(platform.check_standard_name(), True)
-        self.assertEquals(rad.check_standard_name(), True)
+        self.assertTrue(gas.check_standard_name())
+        self.assertTrue(aermp.check_standard_name())
+        self.assertTrue(aercomp.check_standard_name())
+        self.assertTrue(aeropt.check_standard_name())
+        self.assertTrue(cldcomp.check_standard_name())
+        self.assertTrue(cldmicro.check_standard_name())
+        self.assertTrue(cldmacro.check_standard_name())
+        self.assertTrue(cldopt.check_standard_name())
+        self.assertTrue(met.check_standard_name())
+        self.assertTrue(gasjvalue.check_standard_name())
+        self.assertTrue(platform.check_standard_name())
+        self.assertTrue(rad.check_standard_name())
