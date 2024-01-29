@@ -1,6 +1,6 @@
 import unittest
 
-from acvsn_checker.standard_name import StandardName
+from src.standard_name import StandardName
 
 
 class TestChecker(unittest.TestCase):
